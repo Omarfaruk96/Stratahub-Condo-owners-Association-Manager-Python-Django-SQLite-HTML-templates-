@@ -1,0 +1,77 @@
+# Flat Owners' Association Manager
+
+A small, open-source web app that helps a residential building's committee run its day-to-day
+administration: flats and owners, monthly service charges, receipts, expenses, a printable
+annual financial report, and committee terms. The interface works in **English and Bengali (বাংলা)**.
+
+> Built by someone who actually administers a flat owners' association — most committees still
+> run on paper and Excel. This project is an attempt to replace that with something simple,
+> transparent, and free.
+
+## Features
+
+- **Flats & owners registry** — flat number, floor, owner, contact, occupancy status
+- **Monthly service charges** — generate a month's charges in one click (safe to re-run), mark payments, auto-numbered receipts
+- **Expense ledger** — categorised spending (security, cleaning, lift, utilities, repairs, other)
+- **Financial report** — month-by-month income vs expenses, category breakdown, outstanding dues, fund balance; print or save as PDF from the browser (Bengali renders correctly)
+- **Committee module** — terms and office-bearers (President, Secretary, Treasurer ...)
+- **CSV export** — charges and expenses, opens correctly in Excel with Bengali text
+- **Roles** — staff users can edit; other users are read-only (owner view)
+- **Bilingual UI** — switch English / বাংলা from the header
+
+## Quick start
+
+```bash
+git clone https://github.com/<your-username>/flat-owners-manager.git
+cd flat-owners-manager
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_demo       # FAKE demo data + users admin/admin12345 and owner/owner12345
+python manage.py runserver
+```
+
+Open http://127.0.0.1:8000 and log in. Use the `admin` user to edit, `owner` to see the read-only view.
+The Django admin at `/admin/` is used to manage flats, owners and committee terms.
+
+**Change the demo passwords and never load real residents' data into a public repository.**
+
+## Run the tests
+
+```bash
+python manage.py test
+```
+
+## Project layout
+
+```
+config/                 Django settings and root URLs
+association/
+  models.py             Owner, Flat, ServiceCharge, Expense, CommitteeTerm, CommitteeMember
+  services.py           Business logic: generating charges, summaries, balance, defaulters
+  views.py              Pages and CSV exports
+  templates/            HTML templates
+  management/commands/  seed_demo.py (fake data)
+  tests.py              Unit and view tests
+templates/              Base layout and login page
+locale/bn/              Bengali translations (.po source, .mo compiled)
+```
+
+## Translations
+
+Strings are marked with Django's i18n. To edit Bengali text, change `locale/bn/LC_MESSAGES/django.po`
+and recompile with `python manage.py compilemessages` (needs GNU gettext) or with `polib`.
+
+## Roadmap
+
+- [ ] Server-side PDF export with an embedded Bengali font
+- [ ] SMS / email reminders for dues
+- [ ] Owner self-service portal (see only their own flat)
+- [ ] Late fees and advance payments
+- [ ] Audit log of changes
+- [ ] Docker setup and deployment guide
+
+## License
+
+MIT — see [LICENSE](LICENSE).
